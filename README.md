@@ -1,2 +1,3 @@
 # Visuo_Lingo
-# major1
+# Visuo_Lingo
+# Visuo_Lingo

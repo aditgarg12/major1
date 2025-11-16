@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VisuoLingo - Lip Reading AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-wrapper">
+            <div class="logo">VisuoLingo</div>
+            <div class="nav-menu">
+                <a href="#" class="nav-item">Home</a>
+                <a href="#" class="nav-item">Features</a>
+                <a href="#" class="nav-item">Contact Us</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                Master the art of <span class="highlight">Lip Reading</span>
+            </h1>
+            <p class="hero-description">
+                Dive into our comprehensive AI-powered lip reading technology and transform communication today. 
+                Whether you're exploring accessibility solutions or advancing research, join us to unlock the true potential of visual speech recognition.
+            </p>
+            <button class="cta-button" id="tryDemoBtn">
+                Try Demo Now
+                <span class="arrow">→</span>
+            </button>
+        </div>
+    </section>
+
+    <!-- Featured Features -->
+    <section class="features">
+        <div class="section-header">
+            <p class="section-label">FEATURED FEATURES</p>
+            <h2 class="section-title">Learn With Us</h2>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🎥</div>
+                <h3 class="feature-title">Real-Time Analysis</h3>
+                <p class="feature-description">Live video processing with instant predictions and high accuracy lip movement detection.</p>
+                <a href="#" class="feature-link">Learn More →</a>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🧠</div>
+                <h3 class="feature-title">AI-Powered Recognition</h3>
+                <p class="feature-description">Advanced deep learning models using 3D CNN architecture for superior accuracy.</p>
+                <a href="#" class="feature-link">Learn More →</a>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3 class="feature-title">Fast & Accurate</h3>
+                <p class="feature-description">High confidence predictions in seconds with optimized processing pipeline.</p>
+                <a href="#" class="feature-link">Learn More →</a>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">👁️</div>
+                <h3 class="feature-title">Face Detection</h3>
+                <p class="feature-description">Advanced facial landmark detection for precise lip region extraction.</p>
+                <a href="#" class="feature-link">Learn More →</a>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔬</div>
+                <h3 class="feature-title">Research Ready</h3>
+                <p class="feature-description">Built for accessibility research and assistive communication applications.</p>
+                <a href="#" class="feature-link">Learn More →</a>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🌐</div>
+                <h3 class="feature-title">Web-Based Interface</h3>
+                <p class="feature-description">Modern, responsive web interface accessible from any device.</p>
+                <a href="#" class="feature-link">Learn More →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Features -->
+    <section class="key-features">
+        <div class="key-feature">
+            <h2 class="key-feature-title">Real-Time Processing</h2>
+            <p class="key-feature-description">
+                Process lip movements in real-time with our advanced computer vision pipeline. 
+                See predictions as they happen with instant feedback and high accuracy.
+            </p>
+        </div>
+        <div class="key-feature">
+            <h2 class="key-feature-title">Deep Learning Models</h2>
+            <p class="key-feature-description">
+                Powered by state-of-the-art 3D Convolutional Neural Networks trained on extensive datasets. 
+                Our models learn temporal and spatial patterns for superior recognition.
+            </p>
+        </div>
+        <div class="key-feature">
+            <h2 class="key-feature-title">Accessibility First</h2>
+            <p class="key-feature-description">
+                Designed with accessibility in mind, helping deaf and hard-of-hearing individuals 
+                understand spoken communication through visual analysis.
+            </p>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials">
+        <div class="section-header">
+            <h2 class="section-title">Hear Our Success: Voices of Impact</h2>
+        </div>
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <p class="testimonial-text">
+                    "VisuoLingo transformed my research on assistive communication. The real-time accuracy 
+                    and ease of use made it an invaluable tool for our accessibility studies."
+                </p>
+                <div class="testimonial-author">
+                    <div class="author-name">Dr. Sarah Chen</div>
+                    <div class="author-role">Accessibility Researcher</div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <p class="testimonial-text">
+                    "The deep learning models are incredibly accurate. I've integrated VisuoLingo into my 
+                    computer vision projects with outstanding results."
+                </p>
+                <div class="testimonial-author">
+                    <div class="author-name">Michael Rodriguez</div>
+                    <div class="author-role">AI Engineer</div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <p class="testimonial-text">
+                    "As someone working in accessibility tech, VisuoLingo's approach to lip reading 
+                    has opened new possibilities for communication assistance tools."
+                </p>
+                <div class="testimonial-author">
+                    <div class="author-name">Emily Watson</div>
+                    <div class="author-role">Accessibility Developer</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Stack -->
+    <section class="technology">
+        <div class="section-header">
+            <h2 class="section-title">Technology Stack</h2>
+        </div>
+        <div class="tech-grid">
+            <div class="tech-card">
+                <h3 class="tech-title">3D CNN Architecture</h3>
+                <p class="tech-description">Advanced neural networks for temporal-spatial pattern recognition</p>
+            </div>
+            <div class="tech-card">
+                <h3 class="tech-title">Computer Vision</h3>
+                <p class="tech-description">Dlib face detection and landmark tracking for precise lip extraction</p>
+            </div>
+            <div class="tech-card">
+                <h3 class="tech-title">Real-Time Processing</h3>
+                <p class="tech-description">Optimized pipeline for live video analysis and prediction</p>
+            </div>
+            <div class="tech-card">
+                <h3 class="tech-title">Web Interface</h3>
+                <p class="tech-description">Modern Flask-based backend with responsive frontend design</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Application (Hidden Initially) -->
+    <div class="app-container" id="appContainer" style="display: none;">
+        <header class="app-header">
+            <div class="app-logo">VisuoLingo</div>
+            <div class="app-actions">
+                <div class="status-indicator" id="statusIndicator">
+                    <div class="status-dot"></div>
+                    <span class="status-text">Initializing...</span>
+                </div>
+                <button class="back-button" id="backBtn">← Back</button>
+            </div>
+        </header>
+
+        <main class="app-main">
+            <div class="video-section">
+                <div class="video-container">
+                    <div class="video-wrapper">
+                        <img id="videoFeed" src="{{ url_for('video_feed') }}" alt="Video Feed">
+                        <div class="video-overlay">
+                            <div class="face-status warning" id="faceStatus">
+                                <div class="status-icon">⚠️</div>
+                                <span class="status-message">Face not detected. Please position your face in the camera.</span>
+                            </div>
+                        </div>
+                        <div class="recording-indicator" id="recordingIndicator">
+                            <div class="pulse-ring"></div>
+                            <div class="pulse-ring"></div>
+                            <div class="recording-text">RECORDING</div>
+                        </div>
+                    </div>
+                    <div class="progress-bar-container" id="progressContainer">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-panel">
+                <div class="control-section">
+                    <h3 class="control-title">Controls</h3>
+                    <div class="button-group">
+                        <button class="btn btn-primary" id="startBtn">
+                            <span class="btn-icon">🎤</span>
+                            <span class="btn-text">Start Recording</span>
+                        </button>
+                        <button class="btn btn-secondary" id="testBtn">
+                            <span class="btn-icon">🧪</span>
+                            <span class="btn-text">Test Model</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="word-input-section">
+                    <label for="wordInput" class="input-label">Set Expected Word (Optional)</label>
+                    <div class="input-group">
+                        <input type="text" id="wordInput" class="word-input" placeholder="Enter word to compare...">
+                        <button class="btn btn-small" id="setWordBtn">Set</button>
+                    </div>
+                </div>
+
+                <div class="prediction-section">
+                    <h3 class="control-title">Predictions</h3>
+                    <div class="prediction-card" id="predictionCard">
+                        <div class="prediction-content">
+                            <div class="prediction-label">Predicted Word</div>
+                            <div class="prediction-word" id="predictedWord">--</div>
+                            <div class="confidence-bar">
+                                <div class="confidence-fill" id="confidenceFill"></div>
+                            </div>
+                            <div class="confidence-text" id="confidenceText">Confidence: 0%</div>
+                        </div>
+                        <div class="match-indicator" id="matchIndicator">
+                            <div class="match-icon">✓</div>
+                            <div class="match-text">Match!</div>
+                        </div>
+                    </div>
+
+                    <div class="actual-word-card" id="actualWordCard">
+                        <div class="actual-word-label">You're Saying:</div>
+                        <div class="actual-word-text" id="actualWordText">--</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <div class="spinner-ring"></div>
+            <div class="spinner-ring"></div>
+            <div class="spinner-ring"></div>
+        </div>
+        <div class="loading-text">Loading Model...</div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
