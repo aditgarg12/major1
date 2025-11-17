@@ -644,12 +644,22 @@ function initializeCharts() {
         }
     });
 
+    // Store full data for progressive animation
+    window.chartData = {
+        epochs,
+        trainingLoss,
+        validationLoss,
+        trainingAccuracy,
+        validationAccuracy
+    };
+
     // Chart.js configuration
     const chartOptions = {
         responsive: true,
         maintainAspectRatio: true,
         animation: {
-            duration: 2000
+            duration: 300,
+            easing: 'linear'
         },
         plugins: {
             legend: {
@@ -715,7 +725,7 @@ function initializeCharts() {
         }
     };
 
-    // Loss Chart
+    // Loss Chart - Start with empty data
     const lossCtx = document.getElementById('lossChart');
     if (lossCtx) {
         lossChart = new Chart(lossCtx, {
@@ -725,31 +735,37 @@ function initializeCharts() {
                 datasets: [
                     {
                         label: 'Training Loss',
-                        data: trainingLoss,
+                        data: Array(18).fill(null),
                         borderColor: 'rgb(59, 130, 246)',
                         backgroundColor: 'rgba(59, 130, 246, 0.1)',
                         borderWidth: 3,
                         fill: true,
                         tension: 0.4,
-                        pointRadius: 0,
-                        pointHoverRadius: 6,
+                        pointRadius: 4,
+                        pointHoverRadius: 8,
+                        pointBackgroundColor: 'rgb(59, 130, 246)',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
                         pointHoverBackgroundColor: 'rgb(59, 130, 246)',
                         pointHoverBorderColor: '#ffffff',
-                        pointHoverBorderWidth: 2
+                        pointHoverBorderWidth: 3
                     },
                     {
                         label: 'Validation Loss',
-                        data: validationLoss,
+                        data: Array(18).fill(null),
                         borderColor: 'rgb(251, 146, 60)',
                         backgroundColor: 'rgba(251, 146, 60, 0.1)',
                         borderWidth: 3,
                         fill: true,
                         tension: 0.4,
-                        pointRadius: 0,
-                        pointHoverRadius: 6,
+                        pointRadius: 4,
+                        pointHoverRadius: 8,
+                        pointBackgroundColor: 'rgb(251, 146, 60)',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
                         pointHoverBackgroundColor: 'rgb(251, 146, 60)',
                         pointHoverBorderColor: '#ffffff',
-                        pointHoverBorderWidth: 2
+                        pointHoverBorderWidth: 3
                     }
                 ]
             },
@@ -777,7 +793,7 @@ function initializeCharts() {
         });
     }
 
-    // Accuracy Chart
+    // Accuracy Chart - Start with empty data
     const accuracyCtx = document.getElementById('accuracyChart');
     if (accuracyCtx) {
         accuracyChart = new Chart(accuracyCtx, {
@@ -787,31 +803,37 @@ function initializeCharts() {
                 datasets: [
                     {
                         label: 'Training Accuracy',
-                        data: trainingAccuracy,
+                        data: Array(18).fill(null),
                         borderColor: 'rgb(59, 130, 246)',
                         backgroundColor: 'rgba(59, 130, 246, 0.1)',
                         borderWidth: 3,
                         fill: true,
                         tension: 0.4,
-                        pointRadius: 0,
-                        pointHoverRadius: 6,
+                        pointRadius: 4,
+                        pointHoverRadius: 8,
+                        pointBackgroundColor: 'rgb(59, 130, 246)',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
                         pointHoverBackgroundColor: 'rgb(59, 130, 246)',
                         pointHoverBorderColor: '#ffffff',
-                        pointHoverBorderWidth: 2
+                        pointHoverBorderWidth: 3
                     },
                     {
                         label: 'Validation Accuracy',
-                        data: validationAccuracy,
+                        data: Array(18).fill(null),
                         borderColor: 'rgb(251, 146, 60)',
                         backgroundColor: 'rgba(251, 146, 60, 0.1)',
                         borderWidth: 3,
                         fill: true,
                         tension: 0.4,
-                        pointRadius: 0,
-                        pointHoverRadius: 6,
+                        pointRadius: 4,
+                        pointHoverRadius: 8,
+                        pointBackgroundColor: 'rgb(251, 146, 60)',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
                         pointHoverBackgroundColor: 'rgb(251, 146, 60)',
                         pointHoverBorderColor: '#ffffff',
-                        pointHoverBorderWidth: 2
+                        pointHoverBorderWidth: 3
                     }
                 ]
             },
@@ -838,6 +860,88 @@ function initializeCharts() {
             }
         });
     }
+
+    // Animate charts progressively
+    animateChartsProgressive();
+}
+
+function animateChartsProgressive() {
+    if (!window.chartData) return;
+
+    const { epochs, trainingLoss, validationLoss, trainingAccuracy, validationAccuracy } = window.chartData;
+    let currentEpoch = 0;
+    const totalEpochs = 18;
+    const delayBetweenEpochs = 120; // milliseconds
+
+    // Update epoch indicator
+    const epochValueEl = document.getElementById('epochValue');
+    const epochIndicatorEl = document.getElementById('epochIndicator');
+
+    const animateEpoch = () => {
+        if (currentEpoch >= totalEpochs) {
+            // Animation complete - show final state
+            if (epochValueEl) {
+                epochValueEl.textContent = '17';
+                epochValueEl.style.color = '#10b981';
+            }
+            if (epochIndicatorEl) {
+                epochIndicatorEl.classList.add('complete');
+            }
+            return;
+        }
+
+        // Update epoch indicator
+        if (epochValueEl) {
+            epochValueEl.textContent = currentEpoch;
+            epochValueEl.style.color = '#3b82f6';
+            // Add pulse effect
+            epochValueEl.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                if (epochValueEl) {
+                    epochValueEl.style.transform = 'scale(1)';
+                }
+            }, 100);
+        }
+
+        // Update Loss Chart
+        if (lossChart) {
+            lossChart.data.datasets[0].data[currentEpoch] = trainingLoss[currentEpoch];
+            lossChart.data.datasets[1].data[currentEpoch] = validationLoss[currentEpoch];
+            lossChart.update('none'); // 'none' mode for instant update
+        }
+
+        // Update Accuracy Chart
+        if (accuracyChart) {
+            accuracyChart.data.datasets[0].data[currentEpoch] = trainingAccuracy[currentEpoch];
+            accuracyChart.data.datasets[1].data[currentEpoch] = validationAccuracy[currentEpoch];
+            accuracyChart.update('none'); // 'none' mode for instant update
+        }
+
+        currentEpoch++;
+        
+        // Continue animation
+        if (currentEpoch < totalEpochs) {
+            setTimeout(animateEpoch, delayBetweenEpochs);
+        } else {
+            // Final smooth animation to polish
+            setTimeout(() => {
+                if (lossChart) lossChart.update('active');
+                if (accuracyChart) accuracyChart.update('active');
+            }, delayBetweenEpochs);
+        }
+    };
+
+    // Reset epoch indicator
+    if (epochValueEl) {
+        epochValueEl.textContent = '0';
+        epochValueEl.style.color = '#6b7280';
+    }
+    if (epochIndicatorEl) {
+        epochIndicatorEl.classList.remove('complete');
+    }
+
+    // Start animation after a short delay
+    setTimeout(animateEpoch, 300);
 }
 
 function handleCloseStatsModal() {

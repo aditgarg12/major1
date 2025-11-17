@@ -2328,6 +2328,13 @@ section {
     background: rgba(59, 130, 246, 0.05);
 }
 
+.stats-header-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    flex: 1;
+}
+
 .stats-modal-title {
     font-size: 1.5rem;
     font-weight: 700;
@@ -2337,6 +2344,42 @@ section {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+}
+
+.epoch-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+}
+
+.epoch-indicator.complete {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: rgba(16, 185, 129, 0.3);
+}
+
+.epoch-label {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.epoch-value {
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 1rem;
+    min-width: 1.5rem;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.epoch-total {
+    color: var(--text-muted);
+    font-weight: 500;
 }
 
 .stats-modal-close {

@@ -402,7 +402,14 @@
         <div class="stats-modal-backdrop" id="statsModalBackdrop"></div>
         <div class="stats-modal-container">
             <div class="stats-modal-header">
-                <h2 class="stats-modal-title">Model Performance Metrics</h2>
+                <div class="stats-header-content">
+                    <h2 class="stats-modal-title">Model Performance Metrics</h2>
+                    <div class="epoch-indicator" id="epochIndicator">
+                        <span class="epoch-label">Epoch:</span>
+                        <span class="epoch-value" id="epochValue">0</span>
+                        <span class="epoch-total">/ 17</span>
+                    </div>
+                </div>
                 <button class="stats-modal-close" id="statsModalClose" aria-label="Close">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="18" y1="6" x2="6" y2="18"></line>
