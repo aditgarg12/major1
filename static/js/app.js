@@ -24,20 +24,29 @@ function initializeApp() {
 
     // Setup event listeners
     setupEventListeners();
+    setupScrollAnimations();
+    setupStickyNavbar();
+    setupParallaxEffects();
     
     // Don't start status updates until demo is opened
 }
 
 function setupEventListeners() {
     const tryDemoBtn = document.getElementById('tryDemoBtn');
+    const navDemoBtn = document.getElementById('navDemoBtn');
     const backBtn = document.getElementById('backBtn');
     const startBtn = document.getElementById('startBtn');
     const testBtn = document.getElementById('testBtn');
     const setWordBtn = document.getElementById('setWordBtn');
     const wordInput = document.getElementById('wordInput');
+    const statsBtn = document.getElementById('statsBtn');
 
     if (tryDemoBtn) {
         tryDemoBtn.addEventListener('click', handleTryDemo);
+    }
+
+    if (navDemoBtn) {
+        navDemoBtn.addEventListener('click', handleTryDemo);
     }
 
     if (backBtn) {
@@ -63,6 +72,10 @@ function setupEventListeners() {
             }
         });
     }
+
+    if (statsBtn) {
+        statsBtn.addEventListener('click', handleOpenStatsModal);
+    }
     
     // Prevent default on feature links
     const featureLinks = document.querySelectorAll('.feature-link');
@@ -71,6 +84,12 @@ function setupEventListeners() {
             e.preventDefault();
         });
     });
+
+    // Setup navbar smooth scrolling
+    setupNavbarLinks();
+
+    // Setup stats modal
+    setupStatsModal();
 }
 
 function handleTryDemo() {
@@ -433,6 +452,432 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+function setupNavbarLinks() {
+    const navLinks = document.querySelectorAll('.nav-item[data-nav]');
+    if (!navLinks.length) return;
+
+    const sectionMap = Array.from(navLinks)
+        .map(link => {
+            const targetId = link.getAttribute('data-nav');
+            const el = document.getElementById(targetId);
+            return { link, id: targetId, el };
+        })
+        .filter(item => item.el);
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = link.getAttribute('data-nav');
+            const targetSection = document.getElementById(targetId);
+            if (targetSection) {
+                const offsetTop = targetSection.offsetTop - 80;
+                window.scrollTo({
+                    top: offsetTop,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    if (!sectionMap.length) return;
+
+    const highlightActive = () => {
+        const scrollPosition = window.scrollY + 120;
+        let currentId = sectionMap[0].id;
+
+        sectionMap.forEach(({ id, el }) => {
+            if (scrollPosition >= el.offsetTop) {
+                currentId = id;
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.toggle('active', link.getAttribute('data-nav') === currentId);
+        });
+    };
+
+    window.addEventListener('scroll', highlightActive, { passive: true });
+    highlightActive();
+}
+
+function setupScrollAnimations() {
+    const revealTargets = document.querySelectorAll('[data-scroll-reveal]');
+    const featureCards = document.querySelectorAll('.feature-card');
+    const keyFeatures = document.querySelectorAll('.key-feature');
+    const testimonialCards = document.querySelectorAll('.testimonial-card');
+    const techCards = document.querySelectorAll('.tech-card');
+    
+    const allTargets = [...revealTargets, ...featureCards, ...keyFeatures, ...testimonialCards, ...techCards];
+    
+    if (!allTargets.length) return;
+
+    if (!('IntersectionObserver' in window)) {
+        allTargets.forEach(el => el.classList.add('is-visible'));
+        return;
+    }
+
+    const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                obs.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+
+    allTargets.forEach(target => observer.observe(target));
+}
+
+function setupStickyNavbar() {
+    const navbar = document.querySelector('.navbar');
+    if (!navbar) return;
+
+    const toggleState = () => {
+        if (window.scrollY > 40) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    };
+
+    window.addEventListener('scroll', toggleState, { passive: true });
+    toggleState();
+}
+
+function setupParallaxEffects() {
+    const celestialLayer = document.querySelector('.celestial-layer');
+    const aurora = document.querySelector('.hero-aurora');
+    const orbs = document.querySelectorAll('.floating-orb');
+    const heroSection = document.querySelector('.hero');
+
+    if (!celestialLayer && !aurora && !orbs.length) return;
+
+    const updateParallax = () => {
+        const scrollY = window.scrollY;
+        const heroHeight = heroSection ? heroSection.offsetHeight : window.innerHeight;
+        const heroProgress = Math.min(scrollY / heroHeight, 1);
+
+        if (celestialLayer) {
+            celestialLayer.style.transform = `translateY(${scrollY * 0.05}px)`;
+        }
+
+        if (aurora) {
+            aurora.style.transform = `translate3d(0, ${heroProgress * 35}px, 0) scale(${1 + heroProgress * 0.05})`;
+        }
+
+        if (orbs.length) {
+            orbs.forEach((orb, index) => {
+                const shift = heroProgress * (index === 0 ? -40 : -60);
+                orb.style.setProperty('--scroll-offset', `${shift}px`);
+            });
+        }
+    };
+
+    window.addEventListener('scroll', updateParallax, { passive: true });
+    updateParallax();
+}
+
+let lossChart = null;
+let accuracyChart = null;
+
+function handleOpenStatsModal() {
+    const modal = document.getElementById('statsModal');
+    if (modal) {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        
+        // Initialize charts after a short delay to ensure modal is visible
+        setTimeout(() => {
+            initializeCharts();
+        }, 100);
+    }
+}
+
+function initializeCharts() {
+    // Destroy existing charts if they exist
+    if (lossChart) {
+        lossChart.destroy();
+    }
+    if (accuracyChart) {
+        accuracyChart.destroy();
+    }
+
+    // Generate epoch data (0-17)
+    const epochs = Array.from({ length: 18 }, (_, i) => i);
+    
+    // Loss data - starts at 1.2, decreases to 0.05
+    const trainingLoss = epochs.map(epoch => {
+        if (epoch <= 2.5) {
+            return 1.2 - (epoch / 2.5) * 0.8; // Rapid decrease
+        } else if (epoch <= 7.5) {
+            return 0.4 - ((epoch - 2.5) / 5) * 0.3; // Gradual decrease
+        } else {
+            return 0.1 - ((epoch - 7.5) / 10) * 0.05; // Stabilize
+        }
+    });
+    
+    const validationLoss = epochs.map(epoch => {
+        if (epoch <= 2.5) {
+            return 1.05 - (epoch / 2.5) * 0.95; // Sharp decrease
+        } else {
+            return 0.1 - ((epoch - 2.5) / 15.5) * 0.05; // Flatten
+        }
+    });
+
+    // Accuracy data - starts at 0.4, increases to 0.99
+    const trainingAccuracy = epochs.map(epoch => {
+        if (epoch <= 2.5) {
+            return 0.4 + (epoch / 2.5) * 0.45; // Sharp increase
+        } else if (epoch <= 5) {
+            return 0.85 + ((epoch - 2.5) / 2.5) * 0.13; // Continue rising
+        } else {
+            return 0.98 + ((epoch - 5) / 13) * 0.01; // Stabilize
+        }
+    });
+    
+    const validationAccuracy = epochs.map(epoch => {
+        if (epoch <= 1.5) {
+            return 0.85 + (epoch / 1.5) * 0.14; // Very rapid increase
+        } else {
+            return 0.99 + ((epoch - 1.5) / 16.5) * 0.005; // Stable
+        }
+    });
+
+    // Chart.js configuration
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: true,
+        animation: {
+            duration: 2000
+        },
+        plugins: {
+            legend: {
+                labels: {
+                    color: '#a0a0a0',
+                    font: {
+                        family: 'Inter',
+                        size: 12,
+                        weight: 500
+                    },
+                    padding: 15,
+                    usePointStyle: true
+                }
+            },
+            tooltip: {
+                backgroundColor: 'rgba(7, 11, 25, 0.95)',
+                titleColor: '#ffffff',
+                bodyColor: '#a0a0a0',
+                borderColor: 'rgba(59, 130, 246, 0.5)',
+                borderWidth: 1,
+                padding: 12,
+                cornerRadius: 8,
+                displayColors: true
+            }
+        },
+        scales: {
+            x: {
+                grid: {
+                    color: 'rgba(255, 255, 255, 0.05)',
+                    drawBorder: false
+                },
+                ticks: {
+                    color: '#666666',
+                    font: {
+                        family: 'Inter',
+                        size: 11
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Epoch',
+                    color: '#93c5fd',
+                    font: {
+                        family: 'Inter',
+                        size: 12,
+                        weight: 600
+                    }
+                }
+            },
+            y: {
+                grid: {
+                    color: 'rgba(255, 255, 255, 0.05)',
+                    drawBorder: false
+                },
+                ticks: {
+                    color: '#666666',
+                    font: {
+                        family: 'Inter',
+                        size: 11
+                    }
+                }
+            }
+        }
+    };
+
+    // Loss Chart
+    const lossCtx = document.getElementById('lossChart');
+    if (lossCtx) {
+        lossChart = new Chart(lossCtx, {
+            type: 'line',
+            data: {
+                labels: epochs,
+                datasets: [
+                    {
+                        label: 'Training Loss',
+                        data: trainingLoss,
+                        borderColor: 'rgb(59, 130, 246)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                        pointHoverBackgroundColor: 'rgb(59, 130, 246)',
+                        pointHoverBorderColor: '#ffffff',
+                        pointHoverBorderWidth: 2
+                    },
+                    {
+                        label: 'Validation Loss',
+                        data: validationLoss,
+                        borderColor: 'rgb(251, 146, 60)',
+                        backgroundColor: 'rgba(251, 146, 60, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                        pointHoverBackgroundColor: 'rgb(251, 146, 60)',
+                        pointHoverBorderColor: '#ffffff',
+                        pointHoverBorderWidth: 2
+                    }
+                ]
+            },
+            options: {
+                ...chartOptions,
+                scales: {
+                    ...chartOptions.scales,
+                    y: {
+                        ...chartOptions.scales.y,
+                        title: {
+                            display: true,
+                            text: 'Loss',
+                            color: '#93c5fd',
+                            font: {
+                                family: 'Inter',
+                                size: 12,
+                                weight: 600
+                            }
+                        },
+                        min: 0,
+                        max: 1.2
+                    }
+                }
+            }
+        });
+    }
+
+    // Accuracy Chart
+    const accuracyCtx = document.getElementById('accuracyChart');
+    if (accuracyCtx) {
+        accuracyChart = new Chart(accuracyCtx, {
+            type: 'line',
+            data: {
+                labels: epochs,
+                datasets: [
+                    {
+                        label: 'Training Accuracy',
+                        data: trainingAccuracy,
+                        borderColor: 'rgb(59, 130, 246)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                        pointHoverBackgroundColor: 'rgb(59, 130, 246)',
+                        pointHoverBorderColor: '#ffffff',
+                        pointHoverBorderWidth: 2
+                    },
+                    {
+                        label: 'Validation Accuracy',
+                        data: validationAccuracy,
+                        borderColor: 'rgb(251, 146, 60)',
+                        backgroundColor: 'rgba(251, 146, 60, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                        pointHoverBackgroundColor: 'rgb(251, 146, 60)',
+                        pointHoverBorderColor: '#ffffff',
+                        pointHoverBorderWidth: 2
+                    }
+                ]
+            },
+            options: {
+                ...chartOptions,
+                scales: {
+                    ...chartOptions.scales,
+                    y: {
+                        ...chartOptions.scales.y,
+                        title: {
+                            display: true,
+                            text: 'Accuracy',
+                            color: '#93c5fd',
+                            font: {
+                                family: 'Inter',
+                                size: 12,
+                                weight: 600
+                            }
+                        },
+                        min: 0.4,
+                        max: 1.0
+                    }
+                }
+            }
+        });
+    }
+}
+
+function handleCloseStatsModal() {
+    const modal = document.getElementById('statsModal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+        
+        // Destroy charts to free memory
+        if (lossChart) {
+            lossChart.destroy();
+            lossChart = null;
+        }
+        if (accuracyChart) {
+            accuracyChart.destroy();
+            accuracyChart = null;
+        }
+    }
+}
+
+function setupStatsModal() {
+    const modal = document.getElementById('statsModal');
+    const closeBtn = document.getElementById('statsModalClose');
+    const backdrop = document.getElementById('statsModalBackdrop');
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', handleCloseStatsModal);
+    }
+
+    if (backdrop) {
+        backdrop.addEventListener('click', handleCloseStatsModal);
+    }
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal && modal.classList.contains('active')) {
+            handleCloseStatsModal();
+        }
+    });
+}
 
 // Cleanup on page unload
 window.addEventListener('beforeunload', () => {

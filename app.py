@@ -322,6 +322,12 @@ def index():
     """Render the main page"""
     return render_template('index.html')
 
+@app.route('/validations.png')
+def validations_image():
+    """Serve the validations.png image"""
+    from flask import send_from_directory
+    return send_from_directory(PROJECT_ROOT, 'validations.png')
+
 @app.route('/video_feed')
 def video_feed():
     """Video streaming route"""
