@@ -66,6 +66,8 @@ last_audio_time = None
 audio_monitoring_active = False
 audio_stream = None
 word_generated = False
+cap_lock = threading.Lock()
+shutdown_requested = False
 
 # Audio settings
 CHUNK = 1024
@@ -239,12 +241,18 @@ def generate_frames():
     global face_detected, lip_box, predicted_word, prediction_confidence, actual_word
     
     while True:
-        if cap is None or not cap.isOpened():
+        if shutdown_requested:
             break
-        
-        ret, frame = cap.read()
-        if not ret:
-            break
+        with cap_lock:
+            if cap is None or not cap.isOpened():
+                break
+            try:
+                ret, frame = cap.read()
+            except Exception:
+                ret, frame = False, None
+        if not ret or frame is None:
+            time.sleep(0.01)
+            continue
         
         frame = cv2.flip(frame, 1)
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -307,8 +315,12 @@ def generate_frames():
                 cv2.rectangle(frame, (x_min, y_max + 5), (x_min + bar_width, y_max + 15), (0, 255, 0), -1)
         
         # Encode frame
-        ret, buffer = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 85])
-        if not ret:
+        try:
+            ret, buffer = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 85])
+        except Exception:
+            ret, buffer = False, None
+        if not ret or buffer is None:
+            time.sleep(0.01)
             continue
         
         frame_bytes = buffer.tobytes()
@@ -395,18 +407,29 @@ def set_word():
 @app.route('/api/stop', methods=['POST'])
 def stop():
     """Stop the application"""
-    global cap, audio, audio_monitoring_active, audio_stream
+    global cap, audio, audio_monitoring_active, audio_stream, shutdown_requested
+    shutdown_requested = True
     audio_monitoring_active = False
+    time.sleep(0.2)
     if audio_stream:
         try:
             audio_stream.stop_stream()
             audio_stream.close()
         except:
             pass
-    if cap:
-        cap.release()
+        audio_stream = None
+    with cap_lock:
+        if cap:
+            try:
+                cap.release()
+            except Exception:
+                pass
+            cap = None
     if audio:
-        audio.terminate()
+        try:
+            audio.terminate()
+        except Exception:
+            pass
     return jsonify({'success': True})
 
 if __name__ == '__main__':
@@ -433,15 +456,24 @@ if __name__ == '__main__':
         print("\n[INFO] Shutting down...")
     finally:
         audio_monitoring_active = False
+        shutdown_requested = True
         if audio_stream:
             try:
                 audio_stream.stop_stream()
                 audio_stream.close()
             except:
                 pass
-        if cap:
-            cap.release()
+        with cap_lock:
+            if cap:
+                try:
+                    cap.release()
+                except Exception:
+                    pass
+                cap = None
         if audio:
-            audio.terminate()
+            try:
+                audio.terminate()
+            except Exception:
+                pass
         print("[INFO] Cleanup complete.")
 

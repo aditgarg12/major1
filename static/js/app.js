@@ -27,6 +27,14 @@ function initializeApp() {
     setupScrollAnimations();
     setupStickyNavbar();
     setupParallaxEffects();
+    initializeTheme();
+    setupTiltEffects();
+    setupScrollProgress();
+    setupCounters();
+    setupCarousel();
+    setupMagneticButtons();
+    setupButtonRipple();
+    setupVisualShellParallax();
     
     // Don't start status updates until demo is opened
 }
@@ -40,6 +48,9 @@ function setupEventListeners() {
     const setWordBtn = document.getElementById('setWordBtn');
     const wordInput = document.getElementById('wordInput');
     const statsBtn = document.getElementById('statsBtn');
+    const themeToggle = document.getElementById('themeToggle');
+    const carouselPrev = document.getElementById('carouselPrev');
+    const carouselNext = document.getElementById('carouselNext');
 
     if (tryDemoBtn) {
         tryDemoBtn.addEventListener('click', handleTryDemo);
@@ -76,6 +87,15 @@ function setupEventListeners() {
     if (statsBtn) {
         statsBtn.addEventListener('click', handleOpenStatsModal);
     }
+    if (themeToggle) {
+        themeToggle.addEventListener('click', toggleTheme);
+    }
+    if (carouselPrev) {
+        carouselPrev.addEventListener('click', () => rotateCarousel(-1));
+    }
+    if (carouselNext) {
+        carouselNext.addEventListener('click', () => rotateCarousel(1));
+    }
     
     // Prevent default on feature links
     const featureLinks = document.querySelectorAll('.feature-link');
@@ -90,6 +110,183 @@ function setupEventListeners() {
 
     // Setup stats modal
     setupStatsModal();
+}
+
+function initializeTheme() {
+    const saved = localStorage.getItem('theme');
+    const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+    const theme = saved || (prefersLight ? 'light' : 'dark');
+    setTheme(theme);
+}
+
+function setTheme(theme) {
+    const root = document.documentElement;
+    if (theme === 'light') {
+        root.setAttribute('data-theme', 'light');
+    } else {
+        root.removeAttribute('data-theme');
+    }
+    localStorage.setItem('theme', theme);
+    const toggle = document.getElementById('themeToggle');
+    if (toggle) {
+        const icon = toggle.querySelector('.nav-cta-icon');
+        const text = toggle.querySelector('.nav-cta-text');
+        if (icon) icon.textContent = theme === 'light' ? '☀️' : '🌗';
+        if (text) text.textContent = theme === 'light' ? 'Light' : 'Theme';
+    }
+}
+
+function toggleTheme() {
+    const current = localStorage.getItem('theme') || 'dark';
+    const next = current === 'light' ? 'dark' : 'light';
+    setTheme(next);
+    showNotification(`Switched to ${next} theme`, 'success');
+}
+
+function setupTiltEffects() {
+    const cards = document.querySelectorAll('.tilt-card, .feature-card');
+    cards.forEach(card => {
+        let rect;
+        card.addEventListener('mouseenter', () => {
+            rect = card.getBoundingClientRect();
+        });
+        card.addEventListener('mousemove', e => {
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const rx = ((y / rect.height) - 0.5) * -10;
+            const ry = ((x / rect.width) - 0.5) * 10;
+            card.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+            const shine = card.querySelector('.tilt-shine');
+            if (shine) {
+                shine.style.setProperty('--mx', `${x}px`);
+                shine.style.setProperty('--my', `${y}px`);
+            } else {
+                card.style.setProperty('--mx', `${x}px`);
+                card.style.setProperty('--my', `${y}px`);
+            }
+        });
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = '';
+        });
+    });
+}
+
+function setupMagneticButtons() {
+    const buttons = document.querySelectorAll('.nav-cta, .cta-button');
+    buttons.forEach(btn => {
+        let rect;
+        const target = btn.querySelector('.nav-cta-icon') || btn.querySelector('.arrow');
+        btn.addEventListener('mouseenter', () => { rect = btn.getBoundingClientRect(); });
+        btn.addEventListener('mousemove', e => {
+            if (!rect || !target) return;
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const dx = ((x / rect.width) - 0.5) * 8;
+            const dy = ((y / rect.height) - 0.5) * 6;
+            target.style.transform = `translate(${dx}px, ${dy}px)`;
+        });
+        btn.addEventListener('mouseleave', () => {
+            if (target) target.style.transform = '';
+        });
+    });
+}
+
+function setupButtonRipple() {
+    const buttons = document.querySelectorAll('.cta-button');
+    buttons.forEach(btn => {
+        let rect;
+        btn.addEventListener('mouseenter', () => { rect = btn.getBoundingClientRect(); });
+        btn.addEventListener('mousemove', e => {
+            if (!rect) return;
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            btn.style.setProperty('--rx', `${x}px`);
+            btn.style.setProperty('--ry', `${y}px`);
+        });
+        btn.addEventListener('click', () => {
+            btn.classList.add('ripple');
+            setTimeout(() => btn.classList.remove('ripple'), 250);
+        });
+    });
+}
+
+function setupScrollProgress() {
+    const bar = document.getElementById('scrollProgressBar');
+    if (!bar) return;
+    const update = () => {
+        const h = document.documentElement;
+        const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight);
+        bar.style.width = `${Math.max(0, Math.min(1, scrolled)) * 100}%`;
+    };
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+}
+
+function setupCounters() {
+    const counters = document.querySelectorAll('.counter');
+    if (!counters.length) return;
+    const animate = el => {
+        const target = parseFloat(el.getAttribute('data-target'));
+        const suffix = el.getAttribute('data-suffix') || '';
+        let start = 0;
+        const duration = 1200;
+        const startTime = performance.now();
+        const step = now => {
+            const p = Math.min(1, (now - startTime) / duration);
+            const v = start + (target - start) * p;
+            el.textContent = `${Number.isInteger(target) ? Math.round(v) : v.toFixed(2)}${suffix}`;
+            if (p < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+    };
+    const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                const el = e.target;
+                animate(el);
+                obs.unobserve(el);
+            }
+        });
+    }, { threshold: 0.6 });
+    counters.forEach(c => obs.observe(c));
+}
+
+let carouselState = { angle: 0, step: 0, radius: 360, items: [], track: null, interval: null };
+
+function setupCarousel() {
+    const track = document.querySelector('#labCarousel .carousel-track');
+    if (!track) return;
+    const items = Array.from(track.querySelectorAll('.carousel-item'));
+    if (!items.length) return;
+    const n = items.length;
+    const step = 360 / n;
+    const radius = 420;
+    items.forEach((item, i) => {
+        const ang = i * step;
+        item.style.transform = `translate(-50%, -50%) rotateY(${ang}deg) translateZ(${radius}px)`;
+    });
+    carouselState = { angle: 0, step, radius, items, track, interval: null };
+    const start = () => {
+        stopCarousel();
+        carouselState.interval = setInterval(() => rotateCarousel(1), 3000);
+    };
+    const stop = () => stopCarousel();
+    start();
+    track.addEventListener('mouseenter', stop);
+    track.addEventListener('mouseleave', start);
+}
+
+function rotateCarousel(dir) {
+    if (!carouselState.track) return;
+    carouselState.angle += dir * carouselState.step;
+    carouselState.track.style.transform = `translateZ(-200px) rotateY(${carouselState.angle}deg)`;
+}
+
+function stopCarousel() {
+    if (carouselState.interval) {
+        clearInterval(carouselState.interval);
+        carouselState.interval = null;
+    }
 }
 
 function handleTryDemo() {
@@ -576,6 +773,32 @@ function setupParallaxEffects() {
 
     window.addEventListener('scroll', updateParallax, { passive: true });
     updateParallax();
+}
+
+function setupVisualShellParallax() {
+    const shell = document.querySelector('.visual-shell');
+    if (!shell) return;
+    let rect;
+    const primary = shell.querySelector('.visual-card.primary');
+    const secondary = shell.querySelector('.visual-card.secondary');
+    shell.addEventListener('mouseenter', () => {
+        rect = shell.getBoundingClientRect();
+    });
+    shell.addEventListener('mousemove', e => {
+        if (!rect) return;
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const rx = ((y / rect.height) - 0.5) * -4;
+        const ry = ((x / rect.width) - 0.5) * 4;
+        shell.style.setProperty('--mx', `${x}px`);
+        shell.style.setProperty('--my', `${y}px`);
+        if (primary) primary.style.transform = `translateZ(40px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+        if (secondary) secondary.style.transform = `translateZ(20px) rotateX(${rx * 0.6}deg) rotateY(${ry * 0.6}deg)`;
+    });
+    shell.addEventListener('mouseleave', () => {
+        if (primary) primary.style.transform = `translateZ(40px)`;
+        if (secondary) secondary.style.transform = `translateZ(20px)`;
+    });
 }
 
 let lossChart = null;

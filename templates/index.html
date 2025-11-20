@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VisuoLingo - Lip Reading AI</title>
+    <title>VisuoLingo — Lip Reading AI for Inclusive Communication</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-gradient@1.0.0/dist/chartjs-plugin-gradient.min.js"></script>
 </head>
@@ -31,12 +31,17 @@
             <div class="nav-right">
                 <div class="nav-menu">
                     <a href="#home" class="nav-item" data-nav="home">Home</a>
+                    <a href="#labs" class="nav-item" data-nav="labs">Labs</a>
                     <a href="#features" class="nav-item" data-nav="features">Features</a>
-                    <a href="#contact" class="nav-item" data-nav="contact">Technology Stack</a>
+                    <a href="#contact" class="nav-item" data-nav="contact">Tech Stack</a>
                 </div>
+                <button class="nav-cta theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                    <span class="nav-cta-text">Theme</span>
+                    <span class="nav-cta-icon">🌗</span>
+                </button>
                 <button class="nav-cta" id="navDemoBtn">
                     <span class="nav-cta-glow" aria-hidden="true"></span>
-                    <span class="nav-cta-text">Launch Demo</span>
+                    <span class="nav-cta-text">Launch Live Demo</span>
                     <span class="nav-cta-icon">→</span>
                 </button>
             </div>
@@ -103,18 +108,18 @@
 
                 <div class="hero-metrics">
                     <div class="metric-card">
-                        <div class="metric-label">Realtime Accuracy</div>
-                        <div class="metric-value">97%</div>
+                        <div class="metric-label">Real‑time Accuracy</div>
+                        <div class="metric-value"><span class="counter" data-target="97" data-suffix="%">0%</span></div>
                         <div class="metric-hint">Independent benchmark</div>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-label">Latency</div>
-                        <div class="metric-value">0.4s</div>
+                        <div class="metric-label">Avg Latency</div>
+                        <div class="metric-value"><span class="counter" data-target="0.4" data-suffix="s">0s</span></div>
                         <div class="metric-hint">Edge optimized loop</div>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-label">Vocabulary</div>
-                        <div class="metric-value">120+</div>
+                        <div class="metric-label">Active Vocabulary</div>
+                        <div class="metric-value"><span class="counter" data-target="120" data-suffix="+">0+</span></div>
                         <div class="metric-hint">Continuously growing</div>
                     </div>
                 </div>
@@ -168,48 +173,152 @@
         </div>
     </section>
 
+    
+
+    <section class="labs" id="labs" data-scroll-reveal>
+        <div class="section-header">
+            <p class="section-label">IMMERSIVE LABS</p>
+            <h2 class="section-title">3D Gallery</h2>
+        </div>
+        <div class="carousel" id="labCarousel">
+            <div class="carousel-track">
+                <div class="carousel-item">
+                    <div class="tilt-content">
+                        <div class="tilt-icon">👄</div>
+                        <h3 class="tilt-title">Lip Region</h3>
+                        <p class="tilt-desc">Precision box tracking for visual phonemes.</p>
+                    </div>
+                    <div class="tilt-shine"></div>
+                </div>
+                <div class="carousel-item">
+                    <div class="tilt-content">
+                        <div class="tilt-icon">🔊</div>
+                        <h3 class="tilt-title">Signal Sync</h3>
+                        <p class="tilt-desc">Temporal alignment across frames.</p>
+                    </div>
+                    <div class="tilt-shine"></div>
+                </div>
+                <div class="carousel-item">
+                    <div class="tilt-content">
+                        <div class="tilt-icon">🧮</div>
+                        <h3 class="tilt-title">Confidence</h3>
+                        <p class="tilt-desc">Gradient meters tuned for clarity.</p>
+                    </div>
+                    <div class="tilt-shine"></div>
+                </div>
+                <div class="carousel-item">
+                    <div class="tilt-content">
+                        <div class="tilt-icon">🧠</div>
+                        <h3 class="tilt-title">3D CNN</h3>
+                        <p class="tilt-desc">Spatial-temporal inference pipelines.</p>
+                    </div>
+                    <div class="tilt-shine"></div>
+                </div>
+                <div class="carousel-item">
+                    <div class="tilt-content">
+                        <div class="tilt-icon">⚡</div>
+                        <h3 class="tilt-title">Low Latency</h3>
+                        <p class="tilt-desc">Edge-optimized processing loops.</p>
+                    </div>
+                    <div class="tilt-shine"></div>
+                </div>
+            </div>
+            <div class="carousel-controls">
+                <button class="carousel-btn prev" id="carouselPrev">←</button>
+                <button class="carousel-btn next" id="carouselNext">→</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="depth" id="depth" data-scroll-reveal>
+        <div class="section-header">
+            <p class="section-label">PIPELINE DEPTH</p>
+            <h2 class="section-title">Interactive Steps</h2>
+        </div>
+        <div class="depth-steps">
+            <div class="step-card">
+                <div class="step-face">
+                    <div class="tilt-icon">🎥</div>
+                    <div class="tilt-title">Capture</div>
+                </div>
+                <div class="step-back">
+                    <div class="tilt-desc">Frame buffering with motion sync.</div>
+                </div>
+            </div>
+            <div class="step-card">
+                <div class="step-face">
+                    <div class="tilt-icon">👁️</div>
+                    <div class="tilt-title">Track</div>
+                </div>
+                <div class="step-back">
+                    <div class="tilt-desc">Landmarks and lip region extraction.</div>
+                </div>
+            </div>
+            <div class="step-card">
+                <div class="step-face">
+                    <div class="tilt-icon">🧠</div>
+                    <div class="tilt-title">Infer</div>
+                </div>
+                <div class="step-back">
+                    <div class="tilt-desc">3D CNN temporal reasoning.</div>
+                </div>
+            </div>
+            <div class="step-card">
+                <div class="step-face">
+                    <div class="tilt-icon">📊</div>
+                    <div class="tilt-title">Present</div>
+                </div>
+                <div class="step-back">
+                    <div class="tilt-desc">Confidence and comparison visuals.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="scroll-progress" aria-hidden="true"><div class="scroll-progress-bar" id="scrollProgressBar"></div></div>
+
     <!-- Featured Features -->
     <section class="features" id="features" data-scroll-reveal>
         <div class="section-header">
-            <p class="section-label">FEATURED FEATURES</p>
-            <h2 class="section-title">Learn With Us</h2>
+            <p class="section-label">FEATURES</p>
+            <h2 class="section-title">Core Features</h2>
         </div>
         <div class="features-grid">
             <div class="feature-card">
                 <div class="feature-icon">🎥</div>
-                <h3 class="feature-title">Real-Time Analysis</h3>
-                <p class="feature-description">Live video processing with instant predictions and high accuracy lip movement detection.</p>
-                <a href="#" class="feature-link">Learn More →</a>
+                <h3 class="feature-title">Real‑Time Visual Inference</h3>
+                <p class="feature-description">Live frame analysis and prediction with stabilized confidence signals.</p>
+                <a href="#" class="feature-link">Explore →</a>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">🧠</div>
-                <h3 class="feature-title">AI-Powered Recognition</h3>
-                <p class="feature-description">Advanced deep learning models using 3D CNN architecture for superior accuracy.</p>
-                <a href="#" class="feature-link">Learn More →</a>
+                <h3 class="feature-title">3D CNN Temporal Modeling</h3>
+                <p class="feature-description">Spatial‑temporal learning across sequences for robust visual phoneme recognition.</p>
+                <a href="#" class="feature-link">Explore →</a>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">⚡</div>
-                <h3 class="feature-title">Fast & Accurate</h3>
-                <p class="feature-description">High confidence predictions in seconds with optimized processing pipeline.</p>
-                <a href="#" class="feature-link">Learn More →</a>
+                <h3 class="feature-title">Low‑Latency Pipeline</h3>
+                <p class="feature-description">Edge‑optimized processing loop delivering sub‑second inference times.</p>
+                <a href="#" class="feature-link">Explore →</a>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">👁️</div>
-                <h3 class="feature-title">Face Detection</h3>
-                <p class="feature-description">Advanced facial landmark detection for precise lip region extraction.</p>
-                <a href="#" class="feature-link">Learn More →</a>
+                <h3 class="feature-title">Dlib Face + Lip Tracking</h3>
+                <p class="feature-description">68‑point landmarks with precise lip region extraction and normalization.</p>
+                <a href="#" class="feature-link">Explore →</a>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">🔬</div>
-                <h3 class="feature-title">Research Ready</h3>
-                <p class="feature-description">Built for accessibility research and assistive communication applications.</p>
-                <a href="#" class="feature-link">Learn More →</a>
+                <h3 class="feature-title">Research Evaluation Suite</h3>
+                <p class="feature-description">Loss, accuracy, and F1 instrumentation with training progress charts.</p>
+                <a href="#" class="feature-link">Explore →</a>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">🌐</div>
-                <h3 class="feature-title">Web-Based Interface</h3>
-                <p class="feature-description">Modern, responsive web interface accessible from any device.</p>
-                <a href="#" class="feature-link">Learn More →</a>
+                <h3 class="feature-title">Responsive Web Client</h3>
+                <p class="feature-description">Modern UI with accessible controls, theme toggles, and live demo.</p>
+                <a href="#" class="feature-link">Explore →</a>
             </div>
         </div>
     </section>
@@ -239,66 +348,66 @@
         </div>
     </section>
 
-    <!-- Testimonials -->
-    <section class="testimonials" data-scroll-reveal>
-        <div class="section-header">
-            <h2 class="section-title">Hear Our Success: Voices of Impact</h2>
-        </div>
-        <div class="testimonials-grid">
-            <div class="testimonial-card">
-                <p class="testimonial-text">
-                    "VisuoLingo transformed my research on assistive communication. The real-time accuracy 
-                    and ease of use made it an invaluable tool for our accessibility studies."
-                </p>
-                <div class="testimonial-author">
-                    <div class="author-name">Dr. Sarah Chen</div>
-                    <div class="author-role">Accessibility Researcher</div>
-                </div>
-            </div>
-            <div class="testimonial-card">
-                <p class="testimonial-text">
-                    "The deep learning models are incredibly accurate. I've integrated VisuoLingo into my 
-                    computer vision projects with outstanding results."
-                </p>
-                <div class="testimonial-author">
-                    <div class="author-name">Michael Rodriguez</div>
-                    <div class="author-role">AI Engineer</div>
-                </div>
-            </div>
-            <div class="testimonial-card">
-                <p class="testimonial-text">
-                    "As someone working in accessibility tech, VisuoLingo's approach to lip reading 
-                    has opened new possibilities for communication assistance tools."
-                </p>
-                <div class="testimonial-author">
-                    <div class="author-name">Emily Watson</div>
-                    <div class="author-role">Accessibility Developer</div>
-                </div>
-            </div>
-        </div>
-    </section>
+    
 
     <!-- Technology Stack -->
     <section class="technology" id="contact" data-scroll-reveal>
         <div class="section-header">
-            <h2 class="section-title">Technology Stack</h2>
+            <h2 class="section-title">Tech Stack Used in VisuoLingo</h2>
         </div>
         <div class="tech-grid">
             <div class="tech-card">
-                <h3 class="tech-title">3D CNN Architecture</h3>
-                <p class="tech-description">Advanced neural networks for temporal-spatial pattern recognition</p>
+                <h3 class="tech-title">Programming Language</h3>
+                <ul class="tech-list">
+                    <li><strong>Python</strong> — Primary language for model training, preprocessing, and video collection.</li>
+                </ul>
             </div>
             <div class="tech-card">
-                <h3 class="tech-title">Computer Vision</h3>
-                <p class="tech-description">Dlib face detection and landmark tracking for precise lip extraction</p>
+                <h3 class="tech-title">Computer Vision Libraries</h3>
+                <div class="tech-subtitle">OpenCV (cv2) — Used for:</div>
+                <ul class="tech-list">
+                    <li>Video capture from webcam</li>
+                    <li>Frame extraction</li>
+                    <li>Lip region extraction</li>
+                    <li>Image resizing and preprocessing</li>
+                </ul>
+                <div class="tech-subtitle">Dlib — Used for:</div>
+                <ul class="tech-list">
+                    <li>Face detection</li>
+                    <li>68 facial landmark prediction</li>
+                    <li>Identifying and cropping lip region</li>
+                </ul>
             </div>
             <div class="tech-card">
-                <h3 class="tech-title">Real-Time Processing</h3>
-                <p class="tech-description">Optimized pipeline for live video analysis and prediction</p>
+                <h3 class="tech-title">Deep Learning Framework</h3>
+                <div class="tech-subtitle">TensorFlow / Keras</div>
+                <ul class="tech-list">
+                    <li>Building and training the 3D CNN model</li>
+                    <li>Handling datasets, one-hot encoding, and metrics</li>
+                    <li>Using callbacks like EarlyStopping and ReduceLROnPlateau</li>
+                </ul>
             </div>
             <div class="tech-card">
-                <h3 class="tech-title">Web Interface</h3>
-                <p class="tech-description">Modern Flask-based backend with responsive frontend design</p>
+                <h3 class="tech-title">Data Handling & Utilities</h3>
+                <ul class="tech-list">
+                    <li><strong>NumPy</strong> — Storing video frames, arrays, and preprocessing</li>
+                    <li><strong>scikit-learn</strong> — Train–test split</li>
+                    <li><strong>tqdm</strong> — Progress bars during data loading</li>
+                    <li><strong>Matplotlib</strong> — Plotting training graphs (loss, accuracy, F1, etc.)</li>
+                </ul>
+            </div>
+            <div class="tech-card">
+                <h3 class="tech-title">Supporting Tools / Models</h3>
+                <ul class="tech-list">
+                    <li><strong>shape_predictor_68_face_landmarks.dat</strong> (Dlib model)</li>
+                    <li>Pretrained facial landmark model used for lip detection</li>
+                </ul>
+            </div>
+            <div class="tech-card">
+                <h3 class="tech-title">Frontend</h3>
+                <ul class="tech-list">
+                    <li>HTML, CSS, JS</li>
+                </ul>
             </div>
         </div>
     </section>
@@ -510,7 +619,7 @@
             </div>
             <div class="footer-bottom">
                 <div class="footer-copyright">
-                    <p>&copy; 2024 VisuoLingo. All rights reserved.</p>
+                    <p>&copy; 2025 VisuoLingo. All rights reserved.</p>
                 </div>
                 <div class="footer-legal">
                     <a href="#">Privacy Policy</a>
